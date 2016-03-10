@@ -8,20 +8,16 @@ h1 {
 }
 
 .initial-setup {
-/*	display: flex; 
-	justify-content: center;
-*/
 	text-align: center;
 }
 
 .game-tiles {
-/*	display: flex; 
-	justify-content: center;*/
-	/*border: solid black;*/
+	margin-left: 25%; 
+	
+
 }
 
 .tile {
-
 	font-size: 48px;
 	width: 75px;
 	height: 75px;
@@ -36,7 +32,6 @@ h1 {
 
 
 
-/*.tile:hover {
+.tile:hover {
 	border: dashed red;
-	background-color: green;
-}*/
+}

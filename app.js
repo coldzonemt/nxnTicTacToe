@@ -10,12 +10,17 @@ $(document).ready(function(){
 		$('.start-game').click(function() {
 			var boardSize = $('#game-size').val()
 			if(boardSize < 3 || boardSize > 8) {
-				//or an alert, because they are more annoying.
 				alert('Alerts are annoying. Please pick a number between 3 and 8!');
 			} else {
-				//remove form
 				$('.initial-setup').empty();
 				generateBoard(boardSize);
+			}
+			if(boardSize <= 4) {
+				$('.game-tiles').css('margin-left', '40%');
+			} else if(boardSize > 4 && boardSize <= 6) {
+				$('.game-tiles').css('margin-left', '35%');
+			} else {
+				$('.game-tiles').css('margin-left', '28%');
 			}
 		});		
 	})();
