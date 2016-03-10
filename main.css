@@ -7,24 +7,36 @@ h1 {
 	text-align: center;
 }
 
+.initial-setup {
+/*	display: flex; 
+	justify-content: center;
+*/
+	text-align: center;
+}
 
 .game-tiles {
 /*	display: flex; 
 	justify-content: center;*/
+	/*border: solid black;*/
 }
 
 .tile {
-	width: 10%;
-	height: 10%;
+
+	font-size: 48px;
+	width: 75px;
+	height: 75px;
 	display: inline-block;
 	text-align: center;
-	border: solid blue;
 	font-size: 36px;
-	margin-top: 5px;
-	margin-bottom: 5px;
+	padding-top: 5px; 
+	padding-bottom: 5px;
+
+	border: solid black;
 }
 
-.tile:hover {
+
+
+/*.tile:hover {
 	border: dashed red;
 	background-color: green;
-}
+}*/

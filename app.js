@@ -9,10 +9,9 @@ $(document).ready(function(){
 	(function getBoardSize() {
 		$('.start-game').click(function() {
 			var boardSize = $('#game-size').val()
-			console.log(boardSize);
 			if(boardSize < 3 || boardSize > 8) {
 				//or an alert, because they are more annoying.
-				alert('YO I SAID BETWEEN 3 AND 8');
+				alert('Alerts are annoying. Please pick a number between 3 and 8!');
 			} else {
 				//remove form
 				$('.initial-setup').empty();
@@ -29,7 +28,7 @@ $(document).ready(function(){
 	function generateBoard(n) { 
 		for(var i=0; i<n; i++) {
 			for(var j=0; j<n; j++) {
-				$('.game-tiles').append('<div class ="tile" id='+i+'-'+j+'>' + i +','+ j + '</div>');
+				$('.game-tiles').append('<div class ="tile" id='+i+'-'+j+'>-</div>');
 				if(j === n-1) {
 					$('.game-tiles').append('<br>');
 				}	
@@ -45,21 +44,24 @@ $(document).ready(function(){
 	evaluated to determine if an X or an O should be played, 
 	*/
 	function playGame(size) {
-		console.log(size, "Game Size");
 		var numTurns = 0;  
 		var maxTurns = size*size;
 		var rowX = {};
 		var rowO = {};
 		var columnX = {}; 
 		var columnO = {}; 
-		//Initial rows object
+		var diagonalRightX = 0; 
+		var diagonalRightO = 0; 
+		var diagonalLeftO = 0;
+		var diagnoalLeftX = 0;
+
+		//Initial rows and columns object for determining a winning game
 		for(var i=0; i<size; i++) {
 			rowX[i]=0; 
 			columnX[i]=0; 
 			rowO[i]=0; 
 			columnO[i]=0; 
 		}
-		console.log(rowX, rowO, columnX, columnO);
 
 		$('.game-tiles').on('click', '.tile', function(){
 			
@@ -73,11 +75,17 @@ $(document).ready(function(){
 				$(this).data('clicked', true);
 
 
-				//board[x][y]="X";
+				if(checkDiagonalLeft(x, y, size)){
+					diagnoalLeftX++;
+				}
+				if(x===y) {
+					diagonalRightX++; 
+				}
+
 				rowX[x] += 1; 
 				columnX[y] += 1; 
 
-				checkWinner(rowX, columnX, size, 'X');
+				checkWinner(rowX, columnX, diagnoalLeftX, diagonalRightX, size, 'X', numTurns);
 				numTurns ++;  
 
 
@@ -87,37 +95,74 @@ $(document).ready(function(){
 				$(this).data('clicked', true);
 
 
+				if(checkDiagonalLeft(x, y, size)){
+					diagonalLeftO++;
+				}
+
+				if(x===y){
+					diagonalRightO++; 
+				}
 
 				rowO[x] += 1; 
 				columnO[y] += 1; 
 
-				checkWinner(rowO, columnO, size, 'O');
+				checkWinner(rowO, columnO, diagonalLeftO, diagonalRightO, size, 'O', numTurns);
 				numTurns ++;  
 			}
 		});
 	}
-		
+
+	/*
+	The checkDiagonalLeft function checks to see if a cell from the left corner to bottom right corner
+	has been filled. It will return a boolean, true if the coordinates fall on the line, and false if not.
+	*/
+	function checkDiagonalLeft(x, y, size) {
+		var counter = parseInt(size); 
+		for(var i=0; i<size; i++){
+			if(x === i && y === (size-(1+i))) {
+				return true; 
+			}
+		}
+		return false; 
+	}	
  	/*
 	The checkWinner function takes in an array of the coordinates played for X or O and the size of the board 
 	and checks for a win-state in the horizontal direction, vertical direction, and the two diagnoal directions. 
-	Size is a string, so I am using type coercion ('==') in my comparisons for winning. 
+	Size is a string, so it is converted to an integer for comparisons. 
  	*/
-	function checkWinner(row, column, size, turn) {
+	function checkWinner(row, column, diagonalRight, diagonalLeft, size, turn, turnNum) {
 		var winState = false; 
+		size = parseInt(size);
 		
 		for(var item in row) {
-			if(row[item] == size) {
+			if(row[item] === size) {
 				winState = true; 
 			}
 		}
 
 		for(var item in column) {
-			if(column[item] == size) {
+			if(column[item] === size) {
 				winState = true; 
 			}
 		}
+		if(diagonalRight === size) {
+			winState = true;
+		}
+
+		if(diagonalLeft === size) {
+			winState = true; 
+		}
+
+		//If a tie, append a new element notifying players of a tie, and allows the players the option to play again
+		if(turnNum === (size*size)-1 && !winState){
+			$('.game-tiles').append('<div class="tie-message"> It\'s a tie!!!</div>'); 
+		 	$('.game-tiles').append('<button class="play-again-message"> Would you like to play again?</button>'); 
+		 	$('.play-again-message').on('click', function(){
+		 		location.reload();  
+		 	});
+		}
 		
-		//if winner in any case, append new element on top of the game congratulating the winner
+		//if winner in any case, append new element on top of the game congratulating the winner and offering to start a new game
 		 if(winState) {
 		 	$('.game-tiles').append('<div class="winning-message"> CONGRATULATIONS! '+turn+' WINS!!</div>'); 
 		 	$('.game-tiles').append('<button class="play-again-message"> Would you like to play again?</button>'); 
