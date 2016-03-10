@@ -45,7 +45,7 @@ $(document).ready(function(){
 	/*
 	The playGame function takes care of the game play, with the help of the function checkWinner.
 	This function takes in the size of the game and uses it to manage the number of turns. For 
-	each turn, the div is checked for its state (has it been clicked?), and the turn number is 
+	each turn, the div is checked for its state (i.e., has it been clicked?), and the turn number is 
 	evaluated to determine if an X or an O should be played, 
 	*/
 	function playGame(size) {
@@ -131,50 +131,53 @@ $(document).ready(function(){
 		return false; 
 	}	
  	/*
-	The checkWinner function takes in an array of the coordinates played for X or O and the size of the board 
+	The checkWinner function takes in an array of the coordinates played for X or O, the results of checking diagonal right,
+	the results of checking diagonal left, the size of the board, the turn (X or O), and the turn number, 
 	and checks for a win-state in the horizontal direction, vertical direction, and the two diagnoal directions. 
 	Size is a string, so it is converted to an integer for comparisons. 
  	*/
 	function checkWinner(row, column, diagonalRight, diagonalLeft, size, turn, turnNum) {
-		var winState = false; 
+		var winState = false;
+		var flag = true; 
 		size = parseInt(size);
 		
-		for(var item in row) {
-			if(row[item] === size) {
+			for(var item in row) {
+				if(row[item] === size) {
+					winState = true; 
+				}
+			}
+
+			for(var item in column) {
+				if(column[item] === size) {
+					winState = true; 
+				}
+			}
+			if(diagonalRight === size) {
+				winState = true;
+			}
+
+			if(diagonalLeft === size) {
 				winState = true; 
 			}
-		}
 
-		for(var item in column) {
-			if(column[item] === size) {
-				winState = true; 
-			}
-		}
-		if(diagonalRight === size) {
-			winState = true;
-		}
-
-		if(diagonalLeft === size) {
-			winState = true; 
-		}
 
 		//If a tie, append a new element notifying players of a tie, and allows the players the option to play again
 		if(turnNum === (size*size)-1 && !winState){
-			$('.game-tiles').append('<div class="tie-message"> It\'s a tie!!!</div>'); 
-		 	$('.game-tiles').append('<button class="play-again-message"> Would you like to play again?</button>'); 
+			$('.initial-setup').append('<div class="tie-message"> It\'s a tie!!!</div>'); 
+		 	$('.initial-setup').append('<button class="play-again-message"> Would you like to play again?</button>'); 
 		 	$('.play-again-message').on('click', function(){
 		 		location.reload();  
 		 	});
 		}
 		
-		//if winner in any case, append new element on top of the game congratulating the winner and offering to start a new game
-		 if(winState) {
-		 	$('.game-tiles').append('<div class="winning-message"> CONGRATULATIONS! '+turn+' WINS!!</div>'); 
-		 	$('.game-tiles').append('<button class="play-again-message"> Would you like to play again?</button>'); 
+		//If winner, append new element on top of the game congratulating the winner and offering to start a new game
+		if(winState) {
+		 	$('.initial-setup').append('<div class="winning-message"> CONGRATULATIONS! '+turn+' WINS!!</div>'); 
+		 	$('.initial-setup').append('<button class="play-again-message"> Would you like to play again?</button>'); 
 		 	$('.play-again-message').on('click', function(){
 		 		location.reload();  
 		 	});
-		 }
+		}
 	}
 });
 
